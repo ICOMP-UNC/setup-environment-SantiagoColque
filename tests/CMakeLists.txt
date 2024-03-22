@@ -17,7 +17,26 @@ file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../src/logic.c)
 # Link with Unity header
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../external/Unity/src)
 
+if(RUN_COVERAGE)
+	message("Coverage enabled")
+	find_program(LCOV_PATH lcov)
+		if(NOT LCOV_PATH)
+		message(FATAL_ERROR "lcov not found! Aborting..")
+	endif()
 
+	find_program(GCOV_PATH gcov)
+		if(NOT GCOV_PATH)
+		message(FATAL_ERROR "gcov not found! Aborting..")
+	endif()
+
+	find_program(GENHTML_PATH genhtml)
+		if(NOT GENHTML_PATH)
+		message(FATAL_ERROR "genhtml not found! Aborting..")
+	endif()
+
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fprofile-arcs -ftest-coverage --coverage")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov --coverage")
+endif()
 
 
 # Create test executable
